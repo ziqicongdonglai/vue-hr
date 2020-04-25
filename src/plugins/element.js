@@ -16,7 +16,9 @@ import {
     // tab
     Tabs, TabPane,
     // 表格
-    Table, TableColumn
+    Table, TableColumn,
+    // 弹窗
+    Dialog, Tag
 } from 'element-ui'
 
 Vue.use(Button)
@@ -43,6 +45,9 @@ Vue.use(TabPane)
 
 Vue.use(Table)
 Vue.use(TableColumn)
+
+Vue.use(Dialog)
+Vue.use(Tag)
 
 // 把Message挂载到Vue的原型对象上
 Vue.prototype.$message = Message;

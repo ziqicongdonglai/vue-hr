@@ -16,18 +16,28 @@
     <!-- 显示数据表格 -->
     <div>
       <el-table :data="positions" stripe border type="small" style="width: 70%">
-       <el-table-column type="selection" width="55"></el-table-column>
-       <el-table-column prop="id" label="编号" width="56"></el-table-column>
-       <el-table-column prop="name" label="职称名称" width="180"></el-table-column>
-       <el-table-column prop="createDate" label="创建时间" width="200"></el-table-column>
-       <el-table-column prop="right" label="操作">
-         <template slot-scope="">
-           <el-button size="small">编辑</el-button>
-           <el-button type="danger" size="small">删除</el-button>
-         </template>
-       </el-table-column>
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column prop="id" label="编号" width="56"></el-table-column>
+        <el-table-column prop="name" label="职称名称" width="180"></el-table-column>
+        <el-table-column prop="createDate" label="创建时间" width="200"></el-table-column>
+        <el-table-column prop="right" label="操作">
+          <template slot-scope="scope">
+            <el-button size="small" @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
+            <el-button type="danger" size="small" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
+    <el-dialog title="修改职位" :visible.sync="dialogVisible" width="30%">
+      <div>
+        <el-tag>职位名称</el-tag>
+        <el-input class="update_input" size="small" v-model="updatePos.name"></el-input>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisable=false" size="small">取消</el-button>
+        <el-button type="primary" @click="doUpdate" size="small">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -39,13 +49,17 @@ export default {
       pos: {
         name: ""
       },
-      positions: []
+      positions: [],
+      updatePos: {
+        name: ""
+      },
+      dialogVisible: false
     };
   },
   methods: {
-    async initPositions () {
+    async initPositions() {
       // 记得最后的要加斜杠/
-      const data = await this.getRequest('/system/basic/pos/');
+      const data = await this.getRequest("/system/basic/pos/");
       if (data) {
         this.positions = data.obj;
       }
@@ -61,9 +75,44 @@ export default {
       } else {
         this.$message.warning("职称名称不能为空");
       }
+    },
+    showEditDialog(index, data) {
+      // this.updatePos = data
+      Object.assign(this.updatePos, data);
+      this.dialogVisible = true;
+    },
+    async doUpdate() {
+      const resp = await this.putRequest("/system/basic/pos/", this.updatePos);
+      if (resp) {
+        this.initPositions();
+        this.updatePos.name = "";
+        this.dialogVisible = false;
+      }
+    },
+    handleDelete(index, data) {
+      this.$confirm(
+        "此操作将永久删除" + data.name + "职位，是否继续？",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cacelButtonText: "取消",
+          type: "warning"
+        }
+      )
+        .then(() => {
+          this.deleteRequest("/system/basic/pos/" + data.id).then(resp => {
+            this.initPositions();
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消操作"
+          });
+        });
     }
   },
-  mounted () {
+  mounted() {
     this.initPositions();
   }
 };
