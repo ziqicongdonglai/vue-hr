@@ -12,7 +12,7 @@
       ></el-input>
       <!-- 职称选择 -->
       <!-- <el-input placeholder="职称等级" size="small" class="input_type"> -->
-      <el-dropdow trigger="click">
+      <el-dropdown trigger="click">
         <span class="el-dropdown-link">
           <el-input
             placeholder="职称等级"
@@ -28,7 +28,7 @@
           <el-dropdown-item command>初级</el-dropdown-item>
           <el-dropdown-item command>员级</el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdow>
+      </el-dropdown>
       <!-- </el-input> -->
       <el-button type="primary" icon="el-icon-plus" size="small" @click="addJob">添加</el-button>
     </div>
