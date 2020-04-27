@@ -18,7 +18,11 @@ import {
     // 表格
     Table, TableColumn,
     // 弹窗
-    Dialog, Tag
+    Dialog, Tag,
+    // switch
+    Switch,
+    // 选择
+    Select, Option
 } from 'element-ui'
 
 Vue.use(Button)
@@ -48,6 +52,11 @@ Vue.use(TableColumn)
 
 Vue.use(Dialog)
 Vue.use(Tag)
+
+Vue.use(Switch)
+
+Vue.use(Select)
+Vue.use(Option)
 
 // 把Message挂载到Vue的原型对象上
 Vue.prototype.$message = Message;

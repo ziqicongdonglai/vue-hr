@@ -27,6 +27,12 @@
         <el-table-column prop="id" label="编号" width="56"></el-table-column>
         <el-table-column prop="name" label="职称名称" width="180"></el-table-column>
         <el-table-column prop="createDate" label="创建时间" width="200"></el-table-column>
+        <el-table-column prop="enabled" label="是否启用" width="200">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.enabled" type="success">已启用</el-tag>
+            <el-tag v-else type="warning">未启用</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="right" label="操作">
           <template slot-scope="scope">
             <el-button size="small" @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
@@ -46,6 +52,10 @@
       <div>
         <el-tag>职位名称</el-tag>
         <el-input class="update_input" size="small" v-model="updatePos.name"></el-input>
+      </div>
+      <div>
+        <el-tag>是否启用</el-tag>
+        <el-switch v-model="updatePos.enabled" class="update_input"></el-switch>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisable=false" size="small">取消</el-button>
@@ -68,7 +78,8 @@ export default {
       positions: [],
       // 更新按钮的数据
       updatePos: {
-        name: ""
+        name: "",
+        enabled: true
       },
       // 对话框显示与否的标志位
       dialogVisible: false,
@@ -156,9 +167,9 @@ export default {
       )
         .then(() => {
           // 生成删除记录 id的查询字符串
-          let ids = "?";
+          let ids = '?';
           this.multipleSelection.forEach(item => {
-            ids += "ids" + item.id + "&";
+            ids += 'ids=' + item.id + '&';
           });
           this.deleteRequest("/system/basic/pos/" + ids).then(resp => {
             this.initPositions();
