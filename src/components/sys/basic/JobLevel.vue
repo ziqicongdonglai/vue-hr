@@ -24,15 +24,15 @@
         stripe
         border
         type="small"
-        style="width: 70%"
+        style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column type="selection" width="56"></el-table-column>
         <el-table-column prop="id" label="编号" width="56"></el-table-column>
-        <el-table-column prop="name" label="职称名称" width="180"></el-table-column>
-        <el-table-column prop="titleLevel" label="职称级别" width="180"></el-table-column>
-        <el-table-column prop="createDate" label="创建时间" width="200"></el-table-column>
-        <el-table-column prop="enabled" label="是否启用" width="200">
+        <el-table-column prop="name" label="职称名称" width="100"></el-table-column>
+        <el-table-column prop="titleLevel" label="职称级别" width="120"></el-table-column>
+        <el-table-column prop="createDate" label="创建时间" width="150"></el-table-column>
+        <el-table-column prop="enabled" label="是否启用" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.enabled" type="success">已启用</el-tag>
             <el-tag v-else type="warning">未启用</el-tag>
@@ -88,8 +88,8 @@ export default {
     return {
       // 添加输入框的数据
       job: {
-        name: '',
-        titlelevel: ''
+        name: "",
+        titlelevel: ""
       },
       // 表格显示的数据
       jobs: [],
@@ -126,8 +126,8 @@ export default {
         );
         if (resp) {
           this.initJobs();
-          this.job.name = '';
-          this.job.titlelevel = '';
+          this.job.name = "";
+          this.job.titlelevel = "";
         }
       } else {
         this.$message.warning("职称名称和等级不能为空");

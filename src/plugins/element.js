@@ -22,7 +22,9 @@ import {
     // switch
     Switch,
     // 选择
-    Select, Option
+    Select, Option,
+    //
+    Collapse,CollapseItem, Card,Tree
 } from 'element-ui'
 
 Vue.use(Button)
@@ -57,6 +59,11 @@ Vue.use(Switch)
 
 Vue.use(Select)
 Vue.use(Option)
+
+Vue.use(Collapse)
+Vue.use(CollapseItem)
+Vue.use(Card)
+Vue.use(Tree)
 
 // 把Message挂载到Vue的原型对象上
 Vue.prototype.$message = Message;
