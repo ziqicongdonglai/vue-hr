@@ -5,7 +5,7 @@
         <template slot="prepend">ROLE_</template>
       </el-input>
       <el-input v-model="role.nameZh" placeholder="请输入角色中文名" size="small"></el-input>
-      <el-button type="primary" size="small" icon="el-icon-plus">添加角色</el-button>
+      <el-button type="primary" size="small" icon="el-icon-plus" @click="addRole" @keydown.enter.native="addRole">添加角色</el-button>
     </div>
     <div class="permission_main">
       <el-collapse v-model="activeName" accordion size="small" @change="changeMenu">
@@ -13,18 +13,19 @@
           :title="item.nameZh"
           :name="item.id"
           v-for="(item, index) in roles"
-          :key="item.id"
+          :key="index"
         >
           <el-card class="box-card">
             <div slot="header" class="clearfix">
               <span>可访问资源</span>
-              <el-button style="float: right; padding: 3px 0; color: #ff0000" icon="el-icon-delete"></el-button>
+              <el-button style="float: right; padding: 3px 0; color: #ff0000" icon="el-icon-delete" @click="deleteRole(item)"></el-button>
             </div>
             <div>
               <el-tree
-                :data="allMenus"
                 :props="defaultProps"
                 ref="tree"
+                :key="index"
+                :data="allMenus"
                 show-checkbox
                 node-key="id"
                 :default-checked-keys="selectedMenus"
@@ -119,10 +120,43 @@ export default {
         }
       });
     },
+    // 取消修改
     cancelUpdate() {
       this.activeName = -1;
     },
-    addRole() {}
+    // 添加角色
+    addRole() {
+      if (this.role.name && this.role.nameZh) {
+        this.postRequest('/system/basic/permiss/role', this.role).then(resp => {
+          if (resp) {
+            this.initRoles();
+            this.role.name = '';
+            this.role.nameZh = ''
+          }
+        })
+      } else {
+        this.$message.error('角色名称不能为空');
+      }
+    },
+    // 删除角色
+    deleteRole(role) {
+      this.$confirm('此操作将永久删除' + role.nameZh + '角色，是否继续？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteRequest('/system/basic/permiss/role/' + role.id).then(resp => {
+          if (resp) {
+            this.initRoles();
+          }
+        })
+      }).catch(() => {
+        this.$$message({
+          type: 'info',
+          message: '已取消操作'
+        })
+      })
+    }
   }
 };
 </script>
