@@ -30,7 +30,9 @@ import {
     // 
     Image,
     // 分页
-    Pagination
+    Pagination,
+    // 上传
+    Upload
 } from 'element-ui'
 
 Vue.use(Button)
@@ -76,6 +78,9 @@ Vue.use(Loading.directive);
 Vue.use(Image)
 
 Vue.use(Pagination)
+
+Vue.use(Upload)
+
 // 把Message挂载到Vue的原型对象上
 Vue.prototype.$message = Message;
 // MessageBox.confirm的挂载

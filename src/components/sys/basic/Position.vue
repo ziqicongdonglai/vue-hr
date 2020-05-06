@@ -1,16 +1,39 @@
 <template>
   <div class>
     <!-- 输入添加 -->
-    <div>
-      <el-input
-        size="small"
-        class="input_type"
-        v-model="pos.name"
-        placeholder="添加职位..."
-        prefix-icon="el-icon-plus"
-        @keydown.enter.native="addPosition"
-      ></el-input>
-      <el-button type="primary" icon="el-icon-plus" size="small" @click="addPosition">添加</el-button>
+    <div style="display: flex;justify-content: space-between">
+      <div>
+        <el-input
+          size="small"
+          class="input_type"
+          v-model="pos.name"
+          placeholder="添加职位..."
+          prefix-icon="el-icon-plus"
+          @keydown.enter.native="addPosition"
+        ></el-input>
+        <el-button type="primary" icon="el-icon-plus" size="small" @click="addPosition">添加</el-button>
+      </div>
+
+      <!-- 导出导入 -->
+      <div>
+        <el-upload
+          :show-file-list="false"
+          :before-upload="beforeUpload"
+          :on-success="onSuccess"
+          :on-error="onError"
+          :disabled="importBtnDisabled"
+          style="display: inline-flex; margin-right: 8px"
+          action="/system/basic/pos/import"
+        >
+          <el-button
+            :disabled="importBtnDisabled"
+            type="success"
+            :icon="importBtnIcon"
+            size="small"
+          >{{importBtnText}}</el-button>
+        </el-upload>
+        <el-button type="success" icon="el-icon-download" size="small" @click="exportData">导出数据</el-button>
+      </div>
     </div>
 
     <!-- 显示数据表格 -->
@@ -100,7 +123,10 @@ export default {
         total: 0,
         page: 1,
         size: 5
-      }
+      },
+      importBtnText: "导入数据",
+      importBtnIcon: "el-icon-upload2",
+      importBtnDisabled: false
     };
   },
   methods: {
@@ -211,6 +237,26 @@ export default {
     handleCurrentChange(currentPage) {
       this.pageInfo.page = currentPage;
       this.initPositions();
+    },
+    // 数据导入导出
+    onSuccess(response, file, fileList) {
+      this.importBtnText = "导入数据";
+      this.importBtnIcon = "el-icon-upload2";
+      this.importBtnDisabled = false;
+      this.initPositions();
+    },
+    onError(err, file, fileList) {
+      this.importBtnText = "导入数据";
+      this.importBtnIcon = "el-icon-upload2";
+      this.importBtnDisabled = false;
+    },
+    beforeUpload() {
+      this.importBtnText = "正在导入";
+      this.importBtnIcon = "el-icon-loading";
+      this.importBtnDisabled = true;
+    },
+    exportData() {
+      window.open("/system/basic/pos/export", "_parent");
     }
   },
   // 在页面元素挂载后加载数据
