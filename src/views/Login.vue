@@ -7,6 +7,8 @@
       label-width="0px"
       :model="loginForm"
       :rules="loginFormRule"
+      v-loading="loading"
+      element-loading-text="正在加载中"
     >
       <h3 class="login_title">系统登录</h3>
       <!-- 用户名 -->
@@ -21,6 +23,16 @@
           @keydown.enter.native="login"
           show-password
         ></el-input>
+      </el-form-item>
+      <!-- 验证码 -->
+      <el-form-item prop="code">
+        <el-input
+          v-model="loginForm.code"
+          prefix-icon="iconfont icon-password"
+          style="width: 250px; margin-right: 5px"
+          placeholder="点击图片刷新验证码"
+        ></el-input>
+        <el-image :src="codeUrl" @click="refreshCode" alt="加载失败" style="cursor: pointer"></el-image>
       </el-form-item>
       <!-- 记住我 -->
       <el-checkbox v-model="checked" class="login_remember">记住我</el-checkbox>
@@ -38,11 +50,16 @@ export default {
   name: "Login",
   data() {
     return {
+      // 加载标识
+      loading: false,
       // 登录表单的数据绑定对象
       loginForm: {
         username: "admin",
-        password: "123"
+        password: "123",
+        code: ""
       },
+      // 验证码
+      codeUrl: "/verifyCode?time=" + new Date().getTime(),
       checked: true,
       //表单的验证规则对象
       loginFormRule: {
@@ -65,6 +82,14 @@ export default {
             $message: "长度在 3 到 20 个字符",
             trigger: "blur"
           }
+        ],
+        // 验证二维码是否合法
+        code: [
+          {
+            required: true,
+            $$message: "请输入验证码",
+            trigger: "blur"
+          }
         ]
       }
     };
@@ -80,7 +105,9 @@ export default {
         if (!valid) {
           return this.$message.error("用户名或密码格式不正确，请重新输入");
         }
+        this.loading = true;
         const resp = await this.postKeyValueRequest("/doLogin", this.loginForm);
+        this.loading = false;
         console.log(resp);
         if (resp) {
           console.log(resp.obj);
@@ -91,9 +118,16 @@ export default {
           // 获取查询字符串中的path是否包含redirect
           let path = this.$route.query.redirect;
           // 2. 通过编程式导航跳转到后台主页，路由地址是 /home
-          await this.$router.replace('/home');
+          await this.$router.replace("/home");
+        } else {
+          // 登录失败刷新验证码
+          this.refreshCode();
         }
       });
+    },
+    refreshCode() {
+      this.codeUrl = "/verifyCode?time=" + new Date().getTime();
+      this.loginForm.code = '';
     }
   }
 };

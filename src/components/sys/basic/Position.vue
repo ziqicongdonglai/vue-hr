@@ -40,6 +40,16 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pageable">
+        <el-pagination
+          :total="pageInfo.total"
+          :page-sizes="[5, 10, 20, 50, 100]"
+          :page-size="5"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
+          layout="sizes, prev, pager, next, jumper, ->, total, slot"
+        ></el-pagination>
+      </div>
       <el-button
         type="danger"
         size="small"
@@ -84,16 +94,28 @@ export default {
       // 对话框显示与否的标志位
       dialogVisible: false,
       // 批量删除的数据记录
-      multipleSelection: []
+      multipleSelection: [],
+      // 分页信息
+      pageInfo: {
+        total: 0,
+        page: 1,
+        size: 5
+      }
     };
   },
   methods: {
     // 表格数据初始化处理
     async initPositions() {
       // 记得最后的要加斜杠/
-      const data = await this.getRequest("/system/basic/pos/");
-      if (data) {
-        this.positions = data.obj;
+      const resp = await this.getRequest(
+        "/system/basic/pos/?page=" +
+          this.pageInfo.page +
+          "&size=" +
+          this.pageInfo.size
+      );
+      if (resp) {
+        this.positions = resp.obj.list;
+        this.pageInfo.total = resp.obj.total;
       }
     },
     // 添加新记录的事件处理
@@ -181,6 +203,14 @@ export default {
             message: "已取消操作"
           });
         });
+    },
+    handleSizeChange(currestSize) {
+      this.page.size = currestSize;
+      this.initPositions();
+    },
+    handleCurrentChange(currentPage) {
+      this.pageInfo.page = currentPage;
+      this.initPositions();
     }
   },
   // 在页面元素挂载后加载数据

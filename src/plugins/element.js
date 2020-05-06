@@ -24,7 +24,13 @@ import {
     // 选择
     Select, Option,
     //
-    Collapse,CollapseItem, Card,Tree
+    Collapse,CollapseItem, Card,Tree,
+    // loading 加载
+    Loading,
+    // 
+    Image,
+    // 分页
+    Pagination
 } from 'element-ui'
 
 Vue.use(Button)
@@ -65,6 +71,11 @@ Vue.use(CollapseItem)
 Vue.use(Card)
 Vue.use(Tree)
 
+// 使用Loading 的 指令
+Vue.use(Loading.directive);
+Vue.use(Image)
+
+Vue.use(Pagination)
 // 把Message挂载到Vue的原型对象上
 Vue.prototype.$message = Message;
 // MessageBox.confirm的挂载
